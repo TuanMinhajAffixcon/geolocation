@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from math import radians, sin, cos, sqrt, atan2
 
+st.title("Radius Search with Multiple Locations")
+
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371  # Radius of the Earth in kilometers
 

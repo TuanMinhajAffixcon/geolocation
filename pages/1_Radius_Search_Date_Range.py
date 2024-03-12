@@ -48,6 +48,8 @@ end_date = pd.Timestamp('2024-02-29')
 selected_start_date = st.sidebar.date_input("Select Start Date", start_date)
 selected_end_date = st.sidebar.date_input("Select End Date", end_date)
 
+dist = st.radio("Select Distance Unit", ["Kilometers","Meters"])
+
 # Convert date inputs to datetime objects
 selected_start_date = pd.to_datetime(selected_start_date)
 selected_end_date = pd.to_datetime(selected_end_date)
@@ -64,7 +66,13 @@ st.text(f"Number of records within Date Range: {len(df)}")
 # User input for specific locations in Australia
 user_input_lat = st.sidebar.text_input("Enter a latitude:", value="-33.864201")
 user_input_lon = st.sidebar.text_input("Enter a longitude :", value="151.21644")
-radius_input = st.slider("Select radius (in kilometers):", min_value=1, max_value=100, value=10)
+
+if dist == 'Kilometers':
+    radius_input = st.slider("Select radius (in kilometers):", min_value=1, max_value=100, value=10)
+
+elif dist == 'Meters':
+    radius_input = st.slider("Select radius (in Meters):", min_value=1, max_value=1000, value=10)
+    radius_input=radius_input/1000
 
 # Process user input
 if user_input_lat and user_input_lon:

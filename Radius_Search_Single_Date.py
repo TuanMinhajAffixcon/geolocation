@@ -7,7 +7,19 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 
-
+st.set_page_config(page_title='Geo Segmentation',page_icon=':earth_asia:',layout='wide')
+custom_css = """
+<style>
+body {
+    background-color: #0E1117; 
+    secondary-background {
+    background-color: #262730; 
+    padding: 10px; 
+}
+</style>
+"""
+st.write(custom_css, unsafe_allow_html=True)
+st.markdown(custom_css, unsafe_allow_html=True)
 st.title("Radius Search with Specific Date")
 
 # Function to calculate Haversine distance between two coordinates
@@ -54,11 +66,18 @@ df = df[df['datetime_values'].dt.date == selected_date.date()]
 
 # st.write(df)
 
-on = st.toggle('Radius on KM')
+dist = st.radio("Select Distance Unit", ["Kilometers","Meters"])
+
 # User input for specific locations in Australia
 user_input_lat = st.sidebar.text_input("Enter a latitude:", value="-33.864201")
 user_input_lon = st.sidebar.text_input("Enter a longitude :", value="151.21644")
-radius_input = st.slider("Select radius (in kilometers):", min_value=1, max_value=100, value=10)
+
+if dist == 'Kilometers':
+    radius_input = st.slider("Select radius (in kilometers):", min_value=1, max_value=100, value=10)
+
+elif dist == 'Meters':
+    radius_input = st.slider("Select radius (in Meters):", min_value=1, max_value=1000, value=10)
+    radius_input=radius_input/1000
 
 # Process user input
 if user_input_lat and user_input_lon:
