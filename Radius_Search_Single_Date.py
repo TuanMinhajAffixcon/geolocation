@@ -54,6 +54,7 @@ df = df[df['datetime_values'].dt.date == selected_date.date()]
 
 # st.write(df)
 
+on = st.toggle('Radius on KM')
 # User input for specific locations in Australia
 user_input_lat = st.sidebar.text_input("Enter a latitude:", value="-33.864201")
 user_input_lon = st.sidebar.text_input("Enter a longitude :", value="151.21644")
