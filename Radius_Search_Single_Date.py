@@ -20,6 +20,7 @@ body {
 """
 st.write(custom_css, unsafe_allow_html=True)
 st.markdown(custom_css, unsafe_allow_html=True)
+
 st.title("Radius Search with Specific Date")
 
 # Function to calculate Haversine distance between two coordinates
@@ -52,17 +53,17 @@ def generate_circle_points(center_lat, center_lon, radius, num_points=100):
     return circle_points
 
 # Read the sample data
-df = pd.read_csv('sample_Data_csv.csv', sep="|").dropna(subset=['latitude', 'longitude'])
-time=pd.read_csv('random_datetime_values.csv')
-time['datetime_values'] = pd.to_datetime(time['datetime_values'])
-df=pd.concat([df,time],axis=1).dropna(subset=['latitude', 'longitude'])
+df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+df['datetimestamp'] = pd.to_datetime(df['datetimestamp'])
+# time=pd.read_csv('random_datetime_values.csv')
+# df=pd.concat([df,time],axis=1).dropna(subset=['latitude', 'longitude'])
 
-selected_date = st.sidebar.date_input("Select a Date", pd.Timestamp('2024-02-01'))
+selected_date = st.sidebar.date_input("Select a Date", pd.Timestamp('2023-12-01'))
 selected_date = pd.to_datetime(selected_date)
 
 
 # df = df[(df['datetime_values'] >= selected_start_date) & (df['datetime_values'] <= selected_end_date)]
-df = df[df['datetime_values'].dt.date == selected_date.date()]
+df = df[df['datetimestamp'].dt.date == selected_date.date()]
 
 # st.write(df)
 
@@ -114,7 +115,7 @@ if user_input_lat and user_input_lon:
     filtered_df = df[df.apply(lambda row: haversine(user_lat, user_lon, row['latitude'], row['longitude']) <= radius_input, axis=1)]
     # st.write(filtered_df)
 
-    fig = px.histogram(filtered_df, x=filtered_df['datetime_values'].dt.hour, nbins=24, labels={'datetime_values': 'Hour of Day', 'count': 'Count'})
+    fig = px.histogram(filtered_df, x=filtered_df['datetimestamp'].dt.hour, nbins=24, labels={'datetimestamp': 'Hour of Day', 'count': 'Count'})
     fig.update_traces(marker_color='yellow', opacity=0.7)
 
     # Set background color to be transparent

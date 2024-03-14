@@ -57,8 +57,8 @@ def generate_circle_points(center_lat, center_lon, radius, num_points=100):
         circle_points.append((lat, lon))
     return circle_points
 # Generate random datetime values
-start_date = pd.Timestamp('2024-02-01')
-end_date = pd.Timestamp('2024-02-29')
+start_date = pd.Timestamp('2023-12-01')
+end_date = pd.Timestamp('2023-12-31')
 
 # Allow user to pick start and end dates
 selected_start_date = st.sidebar.date_input("Select Start Date", start_date)
@@ -71,14 +71,13 @@ selected_end_date = pd.to_datetime(selected_end_date)
 dist = st.radio("Select Distance Unit", ["Kilometers","Meters"])
 
 
-df = pd.read_csv('sample_Data_csv.csv', sep="|").dropna(subset=['latitude', 'longitude'])
-time=pd.read_csv('random_datetime_values.csv')
-time['datetime_values'] = pd.to_datetime(time['datetime_values'])
-df=pd.concat([df,time],axis=1).dropna(subset=['latitude', 'longitude'])
-df[['Home_latitude', 'Home_longitude']] = df['homegeohash'].apply(decode_geohash)
+df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+df['datetimestamp'] = pd.to_datetime(df['datetimestamp'])
+
+df[['Home_latitude', 'Home_longitude']] = df['homegeohash9'].apply(decode_geohash)
 df[['Work_latitude', 'Work_longitude']] = df['workgeohash'].apply(decode_geohash)
 
-df = df[(df['datetime_values'] >= selected_start_date) & (df['datetime_values'] <= selected_end_date)]
+df = df[(df['datetimestamp'] >= selected_start_date) & (df['datetimestamp'] <= selected_end_date)]
 
 st.text(f"Number of records within Date Range: {len(df)}")
 
@@ -125,6 +124,7 @@ if user_input_lat and user_input_lon:
     circle_points = generate_circle_points(user_lat, user_lon, radius_input)
     folium.PolyLine(circle_points, color='green', weight=2.5, opacity=1).add_to(m)
     filtered_df = df[df.apply(lambda row: haversine(user_lat, user_lon, row['latitude'], row['longitude']) <= radius_input, axis=1)]
+    
     filtered_df['Distance_To_Home (Km)'] = filtered_df.apply(lambda row:
         haversine(user_lat, user_lon, float(row['Home_latitude']), float(row['Home_longitude']))
         if pd.notna(row['Home_latitude']) and pd.notna(row['Home_longitude']) else None, axis=1)

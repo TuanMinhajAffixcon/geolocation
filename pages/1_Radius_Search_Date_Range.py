@@ -41,8 +41,8 @@ def generate_circle_points(center_lat, center_lon, radius, num_points=100):
         circle_points.append((lat, lon))
     return circle_points
 # Generate random datetime values
-start_date = pd.Timestamp('2024-02-01')
-end_date = pd.Timestamp('2024-02-29')
+start_date = pd.Timestamp('2023-12-01')
+end_date = pd.Timestamp('2023-12-31')
 
 # Allow user to pick start and end dates
 selected_start_date = st.sidebar.date_input("Select Start Date", start_date)
@@ -54,12 +54,10 @@ dist = st.radio("Select Distance Unit", ["Kilometers","Meters"])
 selected_start_date = pd.to_datetime(selected_start_date)
 selected_end_date = pd.to_datetime(selected_end_date)
 
-df = pd.read_csv('sample_Data_csv.csv', sep="|").dropna(subset=['latitude', 'longitude'])
-time=pd.read_csv('random_datetime_values.csv')
-time['datetime_values'] = pd.to_datetime(time['datetime_values'])
-df=pd.concat([df,time],axis=1).dropna(subset=['latitude', 'longitude'])
+df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+df['datetimestamp'] = pd.to_datetime(df['datetimestamp'])
 
-df = df[(df['datetime_values'] >= selected_start_date) & (df['datetime_values'] <= selected_end_date)]
+df = df[(df['datetimestamp'] >= selected_start_date) & (df['datetimestamp'] <= selected_end_date)]
 
 st.text(f"Number of records within Date Range: {len(df)}")
 

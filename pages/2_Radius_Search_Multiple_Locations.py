@@ -24,7 +24,8 @@ def haversine(lat1, lon1, lat2, lon2):
 
 selected_distance = st.radio("Select Radius Type", ["Fixed Radius", "Varying Radius"])
 
-df = pd.read_csv('sample_Data_csv.csv', sep="|").dropna(subset=['latitude', 'longitude'])
+df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+
 
 # # Allow user to input multiple latitude and longitude locations
 # locations = st.text_area("Enter multiple latitude and longitude coordinates (one pair per line):", value="-33.864201,151.21644\n-34.052235,118.243683")
