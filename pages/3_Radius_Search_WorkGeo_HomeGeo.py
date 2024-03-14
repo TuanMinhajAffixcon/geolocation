@@ -8,7 +8,11 @@ import plotly.express as px
 import numpy as np
 import folium
 from streamlit_folium import folium_static
+import pyodbc
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 st.title("Radius Search with WorkGeoHash and HomeGeoHash")
 
@@ -71,7 +75,17 @@ selected_end_date = pd.to_datetime(selected_end_date)
 dist = st.radio("Select Distance Unit", ["Kilometers","Meters"])
 
 
-df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+# df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+server = os.getenv('SERVER')
+database = os.getenv('DATABASE')
+table_name = os.getenv('TABLE_NAME')
+
+
+connection_string = f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database}'
+connection = pyodbc.connect(connection_string)
+sql_query = f'SELECT maid,datetimestamp,latitude,longitude,workgeohash,homegeohash9 FROM {table_name}'
+df = pd.read_sql(sql_query, connection)
+df=df.dropna(subset=['latitude', 'longitude'])
 df['datetimestamp'] = pd.to_datetime(df['datetimestamp'])
 
 df[['Home_latitude', 'Home_longitude']] = df['homegeohash9'].apply(decode_geohash)

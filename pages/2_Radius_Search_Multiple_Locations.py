@@ -1,6 +1,11 @@
 import streamlit as st
 import pandas as pd
 from math import radians, sin, cos, sqrt, atan2
+import pyodbc
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 st.title("Radius Search with Multiple Locations")
 
@@ -24,7 +29,17 @@ def haversine(lat1, lon1, lat2, lon2):
 
 selected_distance = st.radio("Select Radius Type", ["Fixed Radius", "Varying Radius"])
 
-df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+# df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+server = os.getenv('SERVER')
+database = os.getenv('DATABASE')
+table_name = os.getenv('TABLE_NAME')
+
+
+connection_string = f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database}'
+connection = pyodbc.connect(connection_string)
+sql_query = f'SELECT maid,datetimestamp,latitude,longitude,workgeohash,homegeohash9 FROM {table_name}'
+df = pd.read_sql(sql_query, connection)
+df=df.dropna(subset=['latitude', 'longitude'])
 
 
 # # Allow user to input multiple latitude and longitude locations

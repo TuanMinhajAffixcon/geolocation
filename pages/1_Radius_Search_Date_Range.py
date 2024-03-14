@@ -7,7 +7,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import numpy as np
+import pyodbc
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Set up Streamlit app
 st.title("Radius Search with Selected Date Range")
 
@@ -54,7 +58,17 @@ dist = st.radio("Select Distance Unit", ["Kilometers","Meters"])
 selected_start_date = pd.to_datetime(selected_start_date)
 selected_end_date = pd.to_datetime(selected_end_date)
 
-df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+# df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+server = os.getenv('SERVER')
+database = os.getenv('DATABASE')
+table_name = os.getenv('TABLE_NAME')
+
+
+connection_string = f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database}'
+connection = pyodbc.connect(connection_string)
+sql_query = f'SELECT maid,datetimestamp,latitude,longitude,workgeohash,homegeohash9 FROM {table_name}'
+df = pd.read_sql(sql_query, connection)
+df=df.dropna(subset=['latitude', 'longitude'])
 df['datetimestamp'] = pd.to_datetime(df['datetimestamp'])
 
 df = df[(df['datetimestamp'] >= selected_start_date) & (df['datetimestamp'] <= selected_end_date)]

@@ -1,18 +1,24 @@
 import streamlit as st
+import pandas as pd
+import pyodbc
+import os
+from dotenv import load_dotenv
 
-no_of_locations = int(st.text_input("Give how many locations you want: "))
-industry_list = ['a', 'b', 'c']
-l = []
+load_dotenv()
 
-for _ in range(no_of_locations):
-    location_data = []
-    row = st.columns(3)
-    
-    for i, industry in enumerate(industry_list):
-        value = row[i].number_input(f"{industry} - Location {_ + 1}")
-        location_data.append(value)
-    
-    l.append(location_data)
+server = os.getenv('SERVER')
+database = os.getenv('DATABASE')
+table_name = os.getenv('TABLE_NAME')
 
-# Print the final list
-st.write("Location Data List:", l)
+
+connection_string = f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database}'
+connection = pyodbc.connect(connection_string)
+
+# # SQL query
+sql_query = f'SELECT maid,datetimestamp,latitude,longitude,workgeohash,homegeohash9 FROM {table_name}'
+
+# Fetch data into a pandas DataFrame
+df = pd.read_sql(sql_query, connection)
+
+
+st.write(df)
