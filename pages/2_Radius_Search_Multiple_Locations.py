@@ -29,7 +29,7 @@ def haversine(lat1, lon1, lat2, lon2):
 
 selected_distance = st.radio("Select Radius Type", ["Fixed Radius", "Varying Radius"])
 
-df = pd.read_csv('5000_movement.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+df = pd.read_csv('10000_mevement.csv', sep=",").dropna(subset=['latitude', 'longitude'])
 
 # server = os.getenv('SERVER')
 # database = os.getenv('DATABASE')
