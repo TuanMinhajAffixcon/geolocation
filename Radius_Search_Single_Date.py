@@ -58,16 +58,16 @@ def generate_circle_points(center_lat, center_lon, radius, num_points=100):
     return circle_points
 
 # Read the sample data
-# df = pd.read_csv('artifacts\Sample_Movement_data.csv', sep=",").dropna(subset=['latitude', 'longitude'])
-server = os.getenv('SERVER')
-database = os.getenv('DATABASE')
-table_name = os.getenv('TABLE_NAME')
+df = pd.read_csv('5000_movement.csv', sep=",").dropna(subset=['latitude', 'longitude'])
+# server = os.getenv('SERVER')
+# database = os.getenv('DATABASE')
+# table_name = os.getenv('TABLE_NAME')
 
 
-connection_string = f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database}'
-connection = pyodbc.connect(connection_string)
-sql_query = f'SELECT maid,datetimestamp,latitude,longitude,workgeohash,homegeohash9 FROM {table_name}'
-df = pd.read_sql(sql_query, connection)
+# connection_string = f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database}'
+# connection = pyodbc.connect(connection_string)
+# sql_query = f'SELECT maid,datetimestamp,latitude,longitude,workgeohash,homegeohash9 FROM {table_name}'
+# df = pd.read_sql(sql_query, connection)
 df['datetimestamp'] = pd.to_datetime(df['datetimestamp'])
 # time=pd.read_csv('random_datetime_values.csv')
 # df=pd.concat([df,time],axis=1).dropna(subset=['latitude', 'longitude'])
